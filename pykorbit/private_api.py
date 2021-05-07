@@ -44,7 +44,6 @@ class Korbit(object):
         self.headers = None
 
         self._issue_access_token()
-        self._get_constants()
 
     def _issue_access_token(self):
         """
