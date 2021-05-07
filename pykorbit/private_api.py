@@ -34,9 +34,7 @@ def _send_get_request(url, headers=None):
 
 
 class Korbit(object):
-    def __init__(self, email=None, password=None, key=None, secret=None):
-        self.email = email
-        self.password = password
+    def __init__(self, key=None, secret=None):
         self.key = key
         self.secret = secret
         self.constant = None
@@ -56,9 +54,7 @@ class Korbit(object):
         url = "https://api.korbit.co.kr/v1/oauth2/access_token"
         data = {"client_id": self.key,
                 "client_secret": self.secret,
-                "grant_type": "password",
-                "username": self.email,
-                "password": self.password}
+                "grant_type": "client_credentials"}
 
         contents = _send_post_request(url, data=data)
 
@@ -89,72 +85,7 @@ class Korbit(object):
             else:
                 print("renew_access_token error ", contents)
 
-    def _get_constants(self):
-        self.constant = get_constants()
 
-    def _get_tick_size(self, currency="BTC"):
-        """
-        KRW 기준 호가 단위를 리턴하는 메서드
-        :param currency: BTC/BCH/BTG/ETH/ETC/XRP
-        :return:
-        """
-        try:
-            if self.constant is not None:
-                currency = currency.lower() + "_krw"
-                currency_dic = self.constant.get(currency)
-
-                if isinstance(currency_dic, dict):
-                    return currency_dic.get("tick_size")
-                else:
-                    return None
-            else:
-                return None
-        except Exception as x:
-            print(x.__class__.__name__)
-            return None
-
-    def _get_quantity_min_max(self, currency="BTC"):
-        """
-        매수/매도 수량 최소 입력값
-        :param currency: BTC/BCH/BTG/ETH/ETC/XRP
-        :return:
-        """
-        try:
-            if self.constant is not None:
-                currency = currency.lower() + "_krw"
-                currency_dic = self.constant.get(currency)
-
-                if isinstance(currency_dic, dict):
-                    return currency_dic.get("order_min_size"), currency_dic.get("order_max_size")
-                else:
-                    return None
-            else:
-                return None
-        except Exception as x:
-            print(x.__class__.__name__)
-            return None
-
-
-    def _get_price_min_max(self, currency="BTC"):
-        """
-        최소/최대 주문가 (원화 기준)
-        :param currency: BTC/BCH/BTG/ETH/ETC/XRP
-        :return:
-        """
-        try:
-            if self.constant is not None:
-                currency = currency.lower() + "_krw"
-                currency_dic = self.constant.get(currency)
-
-                if isinstance(currency_dic, dict):
-                    return currency_dic.get("min_price"), currency_dic.get("max_price")
-                else:
-                    return None
-            else:
-                return None
-        except Exception as x:
-            print(x.__class__.__name__)
-            return None
 
     def get_headers(self):
         try:
